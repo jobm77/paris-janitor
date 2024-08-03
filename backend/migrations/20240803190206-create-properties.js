@@ -5,47 +5,37 @@ const { DataTypes } = require('sequelize');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('users', {
+    await queryInterface.createTable('properties', {
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
       },
-      username: {
-        type: DataTypes.STRING,
+      possessorId: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        unique: true,
-        validate: {
-          isLowercase: true
-        }
+        references: {
+          model: 'users',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
-      firstName: { 
+      address: { 
         type: DataTypes.STRING,
         allowNull: false
       },
-      lastName: {
-        type: DataTypes.STRING,
+      announcement: {
+        type: DataTypes.TEXT,
+        allowNull: false      
+      },
+      pricePerNight: {
+        type: DataTypes.FLOAT,
         allowNull: false
       },
-      phoneNumber: {
-        type: DataTypes.STRING,
+      availabilityCalendar: {
+        type: DataTypes.JSON,
         allowNull: true
-      },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-          isEmail: true
-        }
-      },
-      password: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      role: {
-        type: DataTypes.ENUM('landlord', 'traveler'),
-        allowNull: false
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -61,6 +51,7 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('users');
+    await queryInterface.dropTable('properties');
   }
 };
+

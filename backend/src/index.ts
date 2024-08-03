@@ -2,8 +2,8 @@ import express from 'express';
 
 const app = express();
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8082;
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Port http://localhost:${port}`);
 });

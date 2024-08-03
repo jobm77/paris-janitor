@@ -40,12 +40,11 @@ Payment.init({
     allowNull: false
   },
   status: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM('pending', 'completed', 'failed'),
     allowNull: false
     }
 }, {
   tableName: 'payments',
   modelName: 'Payment',
-  timestamps: false,
   sequelize
 });

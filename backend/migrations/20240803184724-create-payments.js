@@ -5,46 +5,37 @@ const { DataTypes } = require('sequelize');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('users', {
+    await queryInterface.createTable('payments', {
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
       },
-      username: {
-        type: DataTypes.STRING,
+      userId: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        unique: true,
-        validate: {
-          isLowercase: true
-        }
+        references: {
+          model: 'users',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
-      firstName: { 
-        type: DataTypes.STRING,
+      amount: { 
+        type: DataTypes.FLOAT,
         allowNull: false
       },
-      lastName: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      phoneNumber: {
-        type: DataTypes.STRING,
-        allowNull: true
-      },
-      email: {
-        type: DataTypes.STRING,
+      paymentDate: {
+        type: DataTypes.DATE,
         allowNull: false,
-        unique: true,
-        validate: {
-          isEmail: true
-        }
+        defaultValue: DataTypes.NOW
       },
-      password: {
+      paymentMethod: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      role: {
-        type: DataTypes.ENUM('landlord', 'traveler'),
+      status: {
+        type: DataTypes.ENUM('pending', 'completed'),
         allowNull: false
       },
       createdAt: {
@@ -61,6 +52,7 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('users');
+    await queryInterface.dropTable('payments');
   }
 };
+
