@@ -8,6 +8,7 @@ export class Document extends Model {
   public url?: string;
   public name!: string;
   public content!: string;
+  public type!: 'inspection' | 'invoice' | 'quote';
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -36,6 +37,10 @@ Document.init({
   },
   content: {
     type: DataTypes.TEXT,
+    allowNull: false
+  },
+  type: {
+    type: DataTypes.ENUM('inspection', 'invoice', 'quote'),
     allowNull: false
   }
 }, {

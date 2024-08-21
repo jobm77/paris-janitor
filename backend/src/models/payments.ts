@@ -5,10 +5,12 @@ import { User } from "./users";
 export class Payment extends Model {
   public id!: number;
   public userId!: number;
+  public stripe_payment_intent_id!: string;
+  public stripe_customer_id!: string;
   public amount!: number;
   public paymentDate!: Date;
   public paymentMethod!: string;
-  public status!: 'pending' | 'completed';
+  public status!: 'pending' | 'completed' | 'failed';
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -26,6 +28,14 @@ Payment.init({
       model: User,
       key: 'id'
     }
+  },
+  stripe_payment_intent_id: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  stripe_customer_id: {
+    type: DataTypes.STRING,
+    allowNull: true
   },
   amount: {
     type: DataTypes.FLOAT,

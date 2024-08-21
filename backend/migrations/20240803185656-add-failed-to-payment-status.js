@@ -13,11 +13,10 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    /**
-     * Add reverting commands here.
-     *
-     * Example:
-     * await queryInterface.dropTable('users');
-     */
+    await queryInterface.changeColumn('payments', 'status', {  
+      type: DataTypes.ENUM('pending', 'completed'),
+      allowNull: false,
+      defaultValue: 'pending'
+    });
   }
 };
