@@ -29,7 +29,8 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
         throw new Error(errorData.message || 'Identifiant ou mot de passe incorrect');
       }
 
-      //const data = await response.json();
+      const data = await response.json();
+      localStorage.setItem('userRole', data.role);
       localStorage.setItem('isLoggedIn', 'true');
       setIsLoggedIn(true);
       
@@ -45,7 +46,6 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
   const handleCreateAccount = () => { 
     navigate('/register');
   }
-
 
   return (
     <div className="login-container">

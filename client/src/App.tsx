@@ -10,7 +10,8 @@ import Login from './pages/Login'
 import Register from './pages/Register';
 
 import './App.css'
-import Calendar from './pages/Calendar'
+import FinancialSummary from './pages/FinancialSummary';
+//import Calendar from './pages/Calendar'
 
 function App() {
   
@@ -27,8 +28,9 @@ function App() {
       <main>
         <Routes>
           <Route path="/properties" element={<Properties />}  />
-          <Route path="/calendar" element={<Calendar />} />
-          <Route path="/services-catalog" element={<ServicesCatalog />} />
+          {/*<Route path="/calendar" element={<Calendar />} />*/}
+          <Route path="/services-catalog/:bookingId" element={<ServicesCatalog />} />
+          <Route path="/financial-summary" element={<FinancialSummary />} />
           <Route path="/manageAccount" element={<ManageAccount />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />

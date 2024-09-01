@@ -10,7 +10,7 @@ const Register: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<'landlord' | 'traveler'>('traveler');
-  const [dateOfBirth, setDateOfBirth] = useState('');
+  //const [dateOfBirth, setDateOfBirth] = useState('');
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ const Register: React.FC = () => {
           email, 
           password, 
           role, 
-          dateOfBirth 
+          //dateOfBirth 
         }),
       });
 
@@ -44,7 +44,7 @@ const Register: React.FC = () => {
       navigate('/properties'); // Redirection après inscription réussie
 
     } catch (error) {
-        console.error(error);
+      console.error(error);
       setError((error as Error).message);
     }
   };
@@ -126,6 +126,7 @@ const Register: React.FC = () => {
               <option value="landlord">Client-bailleur</option>
             </select>
           </div>
+          {/*
           <div className="form-group">
             <label htmlFor="dateOfBirth">Date de naissance</label>
             <input
@@ -136,6 +137,7 @@ const Register: React.FC = () => {
               required
             />
           </div>
+          */}
           <button type="submit">S'inscrire</button>
         </form>
       </div>

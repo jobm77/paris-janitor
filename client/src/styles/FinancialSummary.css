@@ -1,0 +1,36 @@
+.financial-summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    min-width: 500px;
+    padding: 20px;
+  }
+  
+  .summary-content {
+    text-align: center;
+    background-color: #E9967A;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .summary-content h2 {
+    font-size: 28px;
+    color: #000;
+    margin-bottom: 20px;
+  }
+  
+  .total-amount {
+    font-size: 24px;
+    color: #000;
+    margin-top: 20px;
+  }
+  
+  .error-message {
+    color: #ff4d4d;
+    font-size: 16px;
+  }
+  

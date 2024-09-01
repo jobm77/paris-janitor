@@ -1,10 +1,10 @@
-.login-container {
+/*.login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   background-color: #f4f4f4;
-}
+}*/
 
 .form {
   max-width: 400px;
@@ -50,9 +50,9 @@ button {
 }
 
 button:hover {
-  background: #E9967A;
+  background-color: #d87c5c;
   color: #fff;
-  border: 1px solid #E9967A; 
+  background-color: #d87c5c;
 }
 
 .error-message {
@@ -74,5 +74,5 @@ button:hover {
 }
 
 .create-account-button:hover {
-  background-color: #E9967A;
+  background-color: #d87c5c;
 }

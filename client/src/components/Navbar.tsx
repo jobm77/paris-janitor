@@ -3,8 +3,7 @@ import { Navbar, Nav, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.svg';
 import '../styles/Navbar.css';
-import { FaSignInAlt, FaSignOutAlt } from 'react-icons/fa'; // Import the icons
-
+import { FaSignInAlt, FaSignOutAlt } from 'react-icons/fa';
 
 interface NavbarProps {
   isLoggedIn: boolean;
@@ -28,8 +27,9 @@ const NavbarComponent: React.FC<NavbarProps> = ({ isLoggedIn, onLogout }) => {
           <div className="d-flex justify-content-between w-100">
             <Nav className="mx-auto navbar-menu">
               <Nav.Link as={Link} to="/properties">Propriétés</Nav.Link>
-              <Nav.Link as={Link} to="/calendar">Calendrier des réservations</Nav.Link>
+              {/*<Nav.Link as={Link} to="/calendar">Calendrier des réservations</Nav.Link>*/}
               <Nav.Link as={Link} to="/services-catalog">Catalogue des services</Nav.Link>
+              <Nav.Link as={Link} to="/financial-summary">Bilan financier</Nav.Link>
               <Nav.Link as={Link} to="/manageAccount">Mon compte</Nav.Link>
             </Nav>
             <Nav className="ms-auto">
