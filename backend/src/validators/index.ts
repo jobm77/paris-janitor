@@ -4,3 +4,4 @@ export * from './properties';
 export * from './documents';
 export * from './feedbacks';
 export * from './payments';
+export * from './services';

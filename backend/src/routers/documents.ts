@@ -1,8 +1,5 @@
-/**
- * Routes pour répertorier les membres de l'association.
- */
 
-import express, { Router, Request, Response } from "express";
+import express, { Router } from "express";
 import { createDocument, getAllDocuments, getDocumentById, updateDocument, deleteDocument } from "../controllers";
 export const router = Router();
 

@@ -6,35 +6,86 @@ const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-06-20',
 });
 
-const handleWebhook = async (req: Request, res: Response) => {
-    const sig = req.headers['stripe-signature'];
-    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+/*const createCheckoutSession = async (req: Request, res: Response) => {
+  const { amount } = req.body;
 
-    let event;
-    try {
-      event = stripeClient.webhooks.constructEvent(req.body, sig!, endpointSecret);
-    } catch (error) {
-        console.error('Webhook error', error);
-        const errorObj: Error = error as Error;
-        return res.status(400).send(`Webhook Error: ${errorObj.message}`);
+  try {
+    const session = await stripeClient.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Property Reservation',
+            },
+            unit_amount: amount * 100, // Convertir le montant en cents
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      success_url: `${process.env.FRONTEND_URL}/success`,
+      cancel_url: `${process.env.FRONTEND_URL}/cancel`,
+    });
+
+    res.json({ id: session.id });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('Error creating checkout session', error);
+      res.status(500).json({ message: 'Error creating checkout session' });
+    } else {
+      console.error('Unknown error occurred', error);
+      res.status(500).json({ message: 'Unknown error occurred' });
+    }
+  }
+};
+*/
+
+const handleWebhook = async (req: Request, res: Response) => {
+  const sig = req.headers['stripe-signature'] as string;
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+
+  let event;
+
+  try {
+    if (typeof sig !== 'string') {
+      throw new Error('Stripe signature header is not a string');
     }
 
-    if (event.type === 'payment_intent.succeeded' || event.type === 'payment_intent.payment_failed' || event.type === 'payment_intent.processing') {
-      const paymentIntent = event.data.object as stripe.PaymentIntent;
-      const status = paymentIntent.status as 'succeeded' | 'failed' | 'processing';
+    event = stripeClient.webhooks.constructEvent(req.body as string, sig, endpointSecret);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('Webhook error:', error);
+      return res.status(400).send(`Webhook Error: ${(error as Error).message}`);
+    } else {
+      console.error('Unknown error occurred', error);
+      return res.status(400).send('Webhook Error: Unknown error occurred');
+    }
+  }
 
+  if (event.type === 'payment_intent.succeeded' || event.type === 'payment_intent.payment_failed' || event.type === 'payment_intent.processing') {
+    const paymentIntent = event.data.object as stripe.PaymentIntent;
+    const status = paymentIntent.status as 'succeeded' | 'failed' | 'processing';
 
-      try {
-        await Payment.update({ status }, { where: { stripe_payment_intent_id: paymentIntent.id } });
-        console.log(`Payment status updated to ${status}`);
-      } catch (error) {
-        console.error('Error updating payment status', error);
+    try {
+      await Payment.update(
+        { status },
+        { where: { stripe_payment_intent_id: paymentIntent.id } }
+      );
+      console.log(`Payment status updated to ${status}`);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('Error updating payment status:', error);
+        return res.status(500).json({ message: 'Error updating payment status' });
+      } else {
+        console.error('Unknown error occurred', error);
         return res.status(500).json({ message: 'Error updating payment status' });
       }
     }
+  }
 
-    // indicate to Stripe that the webhook has been received
-    res.status(200).end();
+  res.status(200).end();
 };
     
 const processPayment = async (req: Request, res: Response) => {
@@ -144,6 +195,7 @@ const deletePayment = async (req: Request, res: Response) => {
 };
 
 export {
+  //createCheckoutSession,
   handleWebhook,
   processPayment,
   createPayment,

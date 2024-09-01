@@ -1,8 +1,4 @@
-/**
- * Routes pour répertorier les membres de l'association.
- */
-
-import express, { Router, Request, Response } from "express";
+import express, { Router } from "express";
 import { createFeedback, getAllFeedbacks, getFeedbackById, updateFeedback, deleteFeedback } from "../controllers";
 export const router = Router();
 

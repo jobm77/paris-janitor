@@ -1,9 +1,5 @@
-/**
- * Routes pour répertorier les membres de l'association.
- */
-
-import express, { Router, Request, Response } from "express";
-import { createProperty, getAllProperties, getPropertyById, updateProperty, deleteProperty } from "../controllers";
+import { Router } from "express";
+import { createProperty, getAllProperties, getPropertyById, updateProperty, deleteProperty, addUnavailableDates, removeUnavailableDates, getAvailabilityCalendar } from "../controllers";
 export const router = Router();
 
 
@@ -12,4 +8,7 @@ router.get('/', getAllProperties);
 router.get('/:id', getPropertyById);
 router.put('/:id', updateProperty);
 router.delete('/:id', deleteProperty);
+router.post('/:id/unavailable-dates', addUnavailableDates);
+router.delete('/:id/unavailable-dates', removeUnavailableDates);
+router.get('/:id/availability-calendar', getAvailabilityCalendar);
 

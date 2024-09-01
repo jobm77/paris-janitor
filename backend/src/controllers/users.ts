@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { validateUser, validateUserAuth } from '../validators';
 import { generateToken } from '../services';
-import { User } from '../models';
+import { Booking, Property, User } from '../models';
 import { tokenRevocationList } from '../routers/users';
 import { RequestWithUser } from '../middlewares';
 import dotenv from 'dotenv';
@@ -17,6 +17,7 @@ if (!process.env.JWT_SECRET) {
 
 const register = async (req: Request, res: Response) => {
   const { error, value } = validateUser(req.body);
+  //console.log(error);
   if (error) {
     return res.status(400).json({
       message: 'User validation failed',
@@ -25,8 +26,9 @@ const register = async (req: Request, res: Response) => {
   }
 
   try {
-    const { username, firstName, lastName, phoneNumber, email, password, role, dateOfBirth } = value;
+    const { username, firstName, lastName, phoneNumber, email, password, role } = value;
     const hashedPassword = await bcrypt.hash(password, 10);
+    console.log('Avant User create');
     const newUser = await User.create({
       username,
       firstName,
@@ -34,14 +36,15 @@ const register = async (req: Request, res: Response) => {
       phoneNumber,
       email,
       password: hashedPassword,
-      role,
-      dateOfBirth
+      role
+      //dateOfBirth
     });
-
+    console.log('Bonnknlkl');
     const token = generateToken(newUser.id);
-
+    //console.log(token);
     return res.status(201).json({ newUser, token });
   } catch (error) {
+    console.log(error);
     console.error('Erreur lors de la création de l\'utilisateur:', error);
     return res.status(500).json({ message: "Erreur lors de la création de l'utilisateur." });
   }
@@ -115,7 +118,7 @@ const adminlogin = async (req: RequestWithUser, res: Response) => {
 const updateUser = async (req: Request, res: Response) => {
   try {
     const userId = req.params.id;
-    const { isBan, id, username, password, email, firstname, lastname, dateOfBirth, role, phoneNumber, country, city, address } = req.body;
+    const { isBan, id, username, password, email, firstname, lastname, role, phoneNumber } = req.body;
 
     const user = await User.findByPk(userId);
     if (user !== null) {
@@ -125,7 +128,6 @@ const updateUser = async (req: Request, res: Response) => {
       if (email !== undefined) user.email = email;
       if (firstname !== undefined) user.firstName = firstname;
       if (lastname !== undefined) user.lastName = lastname;
-      if (dateOfBirth !== undefined) user.dateOfBirth = new Date(dateOfBirth);
       if (role !== undefined) user.role = role;
       if (phoneNumber !== undefined) user.phoneNumber = phoneNumber;
 
@@ -240,4 +242,24 @@ const resetPassword = async (req: Request, res: Response) => {
   }
 };
 
-export { register, login, getAllUsers, getUserById, deleteUser, updateUser, adminlogin, resetPassword, requestPasswordReset, logout };
+const getBookingsByUserId = async (req: Request, res: Response) => {
+  const userId = parseInt(req.params.userId, 10);
+
+  try {
+    const bookings = await Booking.findAll({
+      where: { userId },
+      include: [{ model: Property, as: 'property' }]
+    });
+
+    if (bookings.length === 0) {
+      return res.status(404).json({ message: 'No bookings found for this user' });
+    }
+
+    res.json(bookings);
+  } catch (error) {
+    console.error('Error retrieving bookings:', error);
+    res.status(500).json({ message: 'Error retrieving bookings' });
+  }
+};
+
+export { register, login, getAllUsers, getUserById, deleteUser, updateUser, adminlogin, resetPassword, requestPasswordReset, getBookingsByUserId, logout };

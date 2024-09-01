@@ -10,7 +10,7 @@ export class User extends Model {
   public email!: string;
   public password!: string;
   public role!: 'landlord' | 'traveler' | 'admin';
-  public dateOfBirth!: Date;
+  //public dateOfBirth!: Date;
   public readonly createdAt?: Date;
   public readonly updatedAt?: Date;
 }
@@ -56,11 +56,11 @@ User.init({
   role: {
     type: DataTypes.ENUM('landlord', 'traveler', 'admin'),
     allowNull: false
-  },
-  dateOfBirth: {
-    type: DataTypes.DATE,
-    allowNull: false
   }
+  /*dateOfBirth: {
+    type: DataTypes.DATE,
+    allowNull: true
+  }*/
 }, {
   tableName: 'users',
   modelName: 'User',

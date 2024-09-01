@@ -2,6 +2,7 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../services/sequelize';
 import { User } from './users';
 import { Property } from './properties';
+//import { Service } from './services';
 
 export class Booking extends Model {
   public id!: number;
