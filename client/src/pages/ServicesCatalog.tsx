@@ -63,6 +63,7 @@ const ServicesCatalog: React.FC = () => {
   return (
     <div className="services-catalog">
       <h2>Services disponibles</h2>
+      {error && <p className='error-message'>{error}</p>}
       <ul className="services-list">
         {services.map(service => (
           <li key={service.id} className='service-item'>

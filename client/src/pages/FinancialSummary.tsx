@@ -5,10 +5,10 @@ const FinancialSummary: React.FC = () => {
   const [totalSpent, setTotalSpent] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
 
-  /*useEffect(() => {
+  useEffect(() => {
     const fetchFinancialSummary = async () => {
       try {
-        const response = await fetch('http://localhost:8082/financial-summary');
+        const response = await fetch('http://localhost:8082/payments');
         if (response.ok) {
           const data = await response.json();
           setTotalSpent(data.totalSpent);
@@ -22,7 +22,7 @@ const FinancialSummary: React.FC = () => {
     };
 
     fetchFinancialSummary();
-  }, []);*/
+  }, []);
 
   return (
     <div className="financial-summary">

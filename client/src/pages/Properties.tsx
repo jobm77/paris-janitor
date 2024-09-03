@@ -41,7 +41,7 @@ const Properties: React.FC = () => {
     setSelectedDate(date);
 
     try {
-      const response = await fetch('http://localhost:8082/payments/processPayment', {
+      /*const response = await fetch('http://localhost:8082/payments/processPayment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ const Properties: React.FC = () => {
           propertyId: property.id,
           amount: property.pricePerNight,
         }),
-      });
+      });*/
 
       //const { url } = await response.json();
 

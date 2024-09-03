@@ -1,4 +1,3 @@
-import React from 'react';
 import '../styles/Home.css'; // Assurez-vous que le chemin du CSS est correct
 
 const Home = () => {

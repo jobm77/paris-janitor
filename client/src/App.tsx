@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Navbar from './components/Navbar'
 //import Footer from './components/Footer'
 import Properties from './pages/Properties';
