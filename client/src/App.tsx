@@ -29,7 +29,8 @@ function App() {
         <Routes>
           <Route path="/properties" element={<Properties />}  />
           {/*<Route path="/calendar" element={<Calendar />} />*/}
-          <Route path="/services-catalog/:bookingId" element={<ServicesCatalog />} />
+          {/*<Route path="/services-catalog/:bookingId" element={<ServicesCatalog />} />*/}
+          <Route path="/services-catalog" element={<ServicesCatalog />} />
           <Route path="/financial-summary" element={<FinancialSummary />} />
           <Route path="/manageAccount" element={<ManageAccount />} />
           <Route path="/register" element={<Register />} />

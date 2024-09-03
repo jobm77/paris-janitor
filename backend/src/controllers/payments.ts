@@ -1,13 +1,14 @@
 import { Request, Response } from 'express';
 import stripe from 'stripe';
 import { Payment } from '../models';
+import { validatePayment } from '../validators';
 
 const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-06-20',
 });
 
-/*const createCheckoutSession = async (req: Request, res: Response) => {
-  const { amount } = req.body;
+const createCheckoutSession = async (req: Request, res: Response) => {
+  const { propertyId, amount } = req.body;
 
   try {
     const session = await stripeClient.checkout.sessions.create({
@@ -15,32 +16,26 @@ const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY!, {
       line_items: [
         {
           price_data: {
-            currency: 'usd',
+            currency: 'eur',
             product_data: {
-              name: 'Property Reservation',
+              name: `Réservation pour la propriété ${propertyId}`,
             },
-            unit_amount: amount * 100, // Convertir le montant en cents
+            unit_amount: amount * 100,
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL}/success`,
-      cancel_url: `${process.env.FRONTEND_URL}/cancel`,
+      success_url: 'http://localhost:3000/success',
+      cancel_url: 'http://localhost:3000/cancel',
     });
 
     res.json({ id: session.id });
   } catch (error) {
-    if (error instanceof Error) {
-      console.error('Error creating checkout session', error);
-      res.status(500).json({ message: 'Error creating checkout session' });
-    } else {
-      console.error('Unknown error occurred', error);
-      res.status(500).json({ message: 'Unknown error occurred' });
-    }
+    res.status(500).json({ error: 'The checkout session couldn\'t be created.' });
   }
 };
-*/
+
 
 const handleWebhook = async (req: Request, res: Response) => {
   const sig = req.headers['stripe-signature'] as string;
@@ -97,10 +92,10 @@ const processPayment = async (req: Request, res: Response) => {
 
   try {
     const paymentIntent = await stripeClient.paymentIntents.create({
-      amount: amount * 100, // convert to cents
-      currency: 'usd',
+      amount: amount * 100,
+      currency: 'eur',
       payment_method: paymentMethod,
-      confirm: true // confirm the payment immediately
+      confirm: true
     });
 
     const paymentRecord = await Payment.create({ 
@@ -123,6 +118,20 @@ const processPayment = async (req: Request, res: Response) => {
 const createPayment = async (req: Request, res: Response) => {
   try {
     const { userId, stripe_payment_intent_id, stripe_customer_id, amount, paymentDate, paymentMethod, status } = req.body;
+    const { error } = validatePayment({
+      userId,
+      stripe_payment_intent_id,
+      stripe_customer_id,
+      amount,
+      paymentDate,
+      paymentMethod,
+      status
+    });
+
+    if (error) {
+      return res.status(400).json({ message: 'Validation error', details: error.details });
+    }
+    
     const newPayment = await Payment.create({ userId, stripe_payment_intent_id, stripe_customer_id, amount, paymentDate, paymentMethod, status });
     return res.status(201).json(newPayment);
   } catch (error) {
@@ -195,7 +204,7 @@ const deletePayment = async (req: Request, res: Response) => {
 };
 
 export {
-  //createCheckoutSession,
+  createCheckoutSession,
   handleWebhook,
   processPayment,
   createPayment,

@@ -17,13 +17,15 @@ const ServicesCatalog: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (bookingId) {
+    //if (bookingId) {
       fetch(`http://localhost:8082/services`)
       .then(response => response.json())
       .then(data => setServices(data))
       .catch(error => console.error('Error fetching services:', error));
-    }
-  }, [bookingId]);
+    //}
+  //}, [bookingId]);
+  }, []);
+
 
   const handleBooking = async (serviceId: number) => {
     const serviceToBook = services.find(service => service.id === serviceId);
@@ -34,8 +36,10 @@ const ServicesCatalog: React.FC = () => {
     }
     
     try {
-      const response = await fetch(`http://localhost:8082/bookings/${bookingId}/services`, {
-        method: 'POST',
+      //const response = await fetch(`http://localhost:8082/bookings/${bookingId}/services`, {
+      const response = await fetch(`http://localhost:8082/services`, {
+        //method: 'POST',
+        method:'GET',
         headers: {
           'Content-Type': 'application/json',
         },

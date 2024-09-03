@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/Properties.css';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import CheckoutForm from '../components/CheckoutForm';
 
 interface Availability {
   date: string;
@@ -19,9 +22,11 @@ interface Property {
   images?: string[];
 }
 
+const stripePromise = loadStripe('pk_test_51Pj4RIP5xGbYEsCfFsggJoonAtlybm0VVHuzX5NFmp7T0NwCgVDlMcSXJWd3oQV0g9dnlYiiLQH05wCaiTkfGRS600berydBPt');
+
 const Properties: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
-  const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>('');
 
   useEffect(() => {
@@ -31,30 +36,29 @@ const Properties: React.FC = () => {
       .catch(error => console.error('Error fetching properties:', error));
   }, []);
 
-  const handleReservation = async (propertyId: number) => {
-    if (!selectedDate) {
-      alert('Veuillez sélectionner une date.');
-      return;
-    }
+  const handleBooking = async (property: Property, date: string) => {
+    setSelectedProperty(property);
+    setSelectedDate(date);
 
     try {
-      const response = await fetch(`http://localhost:8082/bookings`, {
+      const response = await fetch('http://localhost:8082/payments/processPayment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ propertyId, date: selectedDate }),
+        body: JSON.stringify({
+          propertyId: property.id,
+          amount: property.pricePerNight,
+        }),
       });
 
-      if (response.ok) {
-        alert('Réservation effectuée avec succès !');
-      } else {
-        alert('Erreur lors de la réservation.');
-      }
+      //const { url } = await response.json();
+
+      //window.location.href = url;
     } catch (error) {
-      console.error('Error making reservation:', error);
-      alert('Erreur lors de la réservation.');
+      console.error('Error creating checkout session:', error);
     }
+
   };
 
   return (
@@ -73,7 +77,7 @@ const Properties: React.FC = () => {
               <p>Chambres: {property.bedrooms}</p>
               <p>Salles de bain: {property.bathrooms}</p>
               <p>Superficie: {property.area} m²</p>
-              
+
               <div className="availability">
                 <h4>Disponibilités:</h4>
                 <ul>
@@ -81,7 +85,7 @@ const Properties: React.FC = () => {
                     <li key={date} className={available ? 'available' : 'unavailable'}>
                       {new Date(date).toLocaleDateString('fr-FR')} - {available ? 'Disponible' : 'Non disponible'}
                       {available && (
-                        <button onClick={() => { setSelectedPropertyId(property.id); setSelectedDate(date); }}>
+                        <button onClick={() => handleBooking(property, date)}>
                           Réserver
                         </button>
                       )}
@@ -90,16 +94,14 @@ const Properties: React.FC = () => {
                 </ul>
               </div>
             </div>
-            <div className="reservation">
-              {selectedPropertyId === property.id && (
-                <button
-                  onClick={() => handleReservation(property.id)}
-                  disabled={!selectedDate}
-                >
-                  Réserver pour {new Date(selectedDate).toLocaleDateString('fr-FR')}
-                </button>
-              )}
-            </div>
+            {selectedProperty?.id === property.id && (
+              <div className="payment-section">
+                <h3>Confirmation de réservation pour {selectedProperty.address}</h3>
+                <Elements stripe={stripePromise}>
+                  <CheckoutForm property={selectedProperty} date={selectedDate} />
+                </Elements>
+              </div>
+            )}
           </div>
         ))}
       </div>
